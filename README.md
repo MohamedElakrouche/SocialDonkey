@@ -1,11 +1,10 @@
-# SocialDonkey
+                        # DonkeyBook
 
         Projet individuel de création d'un mini réseau social en 5 jours.
 
 
 
         ----------Planning de la semaine-------------
-
 
 Objectif du 30/10/2024 : Sécuriser les données et permettre de choisir un avatar.
 
@@ -14,7 +13,6 @@ Objectif du 31/10/2024 : Création du profil avec affichage des infos persos et 
 Objectif du 01/11/2024 : Création de la page "Acueil" qui doit contenir les publications avec la possibilité d'en créer.
 
                            ----Bonus---
-
 
 Objectif du week-end : Réglage des interactions (likes, des amitiés, publications et des commentaires.)
 
