@@ -51,15 +51,19 @@
 
         // ---------récupération des réponses du formulaire-----------
 
-        $user_name = $_POST["user_name"];
-        $user_firstname = $_POST["user_firstname"];
-        $user_mail = $_POST["user_mail"];
+        $user_name = htmlspecialchars(trim($_POST["user_name"]));
+        $user_firstname = htmlspecialchars(trim($_POST["user_firstname"]));
+        $user_mail = filter_var(trim($_POST["user_mail"]), FILTER_VALIDATE_EMAIL);
         $user_birthday = $_POST["user_birthday"];
         $user_password = $_POST["user_password"];
         $user_password_verification = $_POST["confirm_password"];
+        $hashed_password = password_hash($user_password, PASSWORD_BCRYPT);
 
-        if (empty($user_password) || empty($user_name) || empty($user_firstname) || empty($user_birthday) || ($user_password == $user_password_verification)) {
+        if (empty($user_password) || empty($user_name) || empty($user_firstname) || empty($user_birthday)) {
             die("Tous les champs doivent être remplis");
+        }
+        if ($user_password !== $user_password_verification) {
+            die("Les mots de passe ne correspondent pas");
         }
 
         // -------------Paramètres de connexion à la BDD----------------
@@ -74,7 +78,6 @@
             $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connexion réussie à la base de données SocialDonkey";
         } catch (PDOException $e) {
 
             echo "Erreur de connexion : " . $e->getMessage();
@@ -94,12 +97,13 @@
         $secure_requete->bindParam(":user_firstname", $user_firstname);
         $secure_requete->bindParam(":user_mail", $user_mail);
         $secure_requete->bindParam(":user_birthday", $user_birthday);
-        $secure_requete->bindParam(":user_password", $user_password);
+        $secure_requete->bindParam(":user_password", $hashed_password);
 
 
         try {
             if ($secure_requete->execute()) {
                 echo "Inscription réussie !";
+                header("location:form_validation.php");
             } else {
                 echo "Erreur lors de l'inscription.";
             }
