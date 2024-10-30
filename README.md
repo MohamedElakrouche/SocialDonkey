@@ -18,7 +18,7 @@ Objectif du week-end : Réglage des interactions (likes, des amitiés, publicati
 
          ---------------------Le 29/10/2024-------------------
 
-- Utilisation du nom du réseau social : SocialDonkey ( en référence à l'école de formation DonkeySchool)
+- Utilisation du nom du réseau social : DonkeyBook ( en référence à l'école de formation DonkeySchool)
 
 - Création du MCD + BDD mysql
 - Création du formulaire et des champs de base
