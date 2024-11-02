@@ -68,20 +68,8 @@
 
         // -------------Paramètres de connexion à la BDD----------------
 
-        $host = 'localhost';
-        $dbname = 'SocialDonkey';
-        $username = 'root';
-        $password = 'root';
-
-        // Connexion avec PDO avec message d'erreur au cas où...
-        try {
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-
-            echo "Erreur de connexion : " . $e->getMessage();
-        }
+       
+        include_once("connectionBDD.php");
 
         // ---------Préparation de la requete SQL à l'insertion-----------
 
@@ -93,17 +81,18 @@
         // ---------------Liaison des paramètres et execution -------------------
 
 
-        $secure_requete->bindParam(":user_name", $user_name);
-        $secure_requete->bindParam(":user_firstname", $user_firstname);
-        $secure_requete->bindParam(":user_mail", $user_mail);
-        $secure_requete->bindParam(":user_birthday", $user_birthday);
-        $secure_requete->bindParam(":user_password", $hashed_password);
+        $secure_requete->bindParam(":user_name", $user_name, PDO::PARAM_STR);
+        $secure_requete->bindParam(":user_firstname", $user_firstname,PDO::PARAM_STR);
+        $secure_requete->bindParam(":user_mail", $user_mail, PDO::PARAM_STR);
+        $secure_requete->bindParam(":user_birthday", $user_birthday,PDO::PARAM_STR);
+        $secure_requete->bindParam(":user_password", $hashed_password,PDO::PARAM_STR);
 
 
         try {
             if ($secure_requete->execute()) {
-                echo "Inscription réussie !";
-                header("location:form_validation.php");
+                
+                header("location:connection_website.php");
+                exit();
             } else {
                 echo "Erreur lors de l'inscription.";
             }
