@@ -44,7 +44,7 @@
                 // Vérifie si un ID utilisateur a été trouvé
                 if ($result_connection) {
                     $testID = $result_connection["id_user"];
-                    $_SESSION["test_id"] = $testID;
+                    $_SESSION["user_id"] = $testID;
 
                     // Redirection vers la page de profil
                     header("Location: profile.php");

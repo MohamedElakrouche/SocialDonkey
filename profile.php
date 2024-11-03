@@ -13,12 +13,14 @@ if (isset($_SESSION["test_id"])) {
     $stmt->execute(); // Exécution de la requête
 
     // Récupération de la ligne de résultat
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $requete_profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($row) {
-        echo "Adresse email : " . htmlspecialchars($row["user_mail"]) . "<br>";
-        echo "Nom : " . htmlspecialchars($row["user_name"]) . "<br>";
-        echo "Prénom : " . htmlspecialchars($row["user_firstname"]) . "<br>";
+    if ($requete_profile) {
+        echo "Adresse email : " . htmlspecialchars($requete_profile["user_mail"]) . "<br>";
+        echo "Nom : " . htmlspecialchars($requete_profile["user_name"]) . "<br>";
+        echo "Prénom : " . htmlspecialchars($requete_profile["user_firstname"]) . "<br>";
+        echo "date de naissance : " . htmlspecialchars($requete_profile["user_birthday"]) . "<br>";
+        echo "date d'inscription : " . htmlspecialchars($requete_profile["user_date"]) . "<br>";
     } else {
         echo "Utilisateur non trouvé.";
     }
