@@ -60,6 +60,7 @@
         $user_password = $_POST["user_password"];
         $user_password_verification = $_POST["confirm_password"];
         $hashed_password = password_hash($user_password, PASSWORD_BCRYPT);
+        $user_date = $_POST["user_date"];
 
         if (empty($user_password) || empty($user_name) || empty($user_firstname) || empty($user_birthday)) {
             die("Tous les champs doivent être remplis");
@@ -88,7 +89,7 @@
         $secure_requete->bindParam(":user_mail", $user_mail, PDO::PARAM_STR);
         $secure_requete->bindParam(":user_birthday", $user_birthday,PDO::PARAM_STR);
         $secure_requete->bindParam(":user_password", $hashed_password,PDO::PARAM_STR);
-
+        $secure_requete->bindParam(":user_date", $user_date,PDO::PARAM_STR);
 
         try {
             if ($secure_requete->execute()) {

@@ -16,10 +16,10 @@ include_once("connectionBDD.php");
 include_once("nav.php");
 
 // Vérifie si l'ID utilisateur est présent dans la session
-if (isset($_SESSION["test_id"])) {
+if (isset($_SESSION["user_id"])) {
     // Préparation de la requête avec l'ID utilisateur de la session
     $stmt = $pdo->prepare('SELECT * FROM user WHERE id_user = :id_user');
-    $stmt->bindParam(":id_user", $_SESSION["test_id"], PDO::PARAM_INT);
+    $stmt->bindParam(":id_user", $_SESSION["user_id"], PDO::PARAM_INT);
     $stmt->execute();
 
     // Récupération de la ligne de résultat

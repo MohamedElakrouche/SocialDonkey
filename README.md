@@ -25,3 +25,26 @@ Objectif du week-end : Réglage des interactions (likes, des amitiés, publicati
 - Pas encore totalement sécurisé
 
          -------------------Le 30/10/2024--------------------
+
+         - Sécurisation des données OK mais pas encore d'Avatar
+
+        -------------------Le 31/10/2024--------------------
+
+        - Création du profil sans option de supprimer
+
+                -------------------Le 31/10/2024 && 01/11/2024--------------------
+
+        - J'ai accordé deux jours de repos à mon clavier pour qu'il soit au top de sa forme
+
+        -------------------Le 03/11/2024--------------------
+
+        Rajout de la possibilité de la page des publications avec possibilité de créer des publications, de les modifié et de les supprimer
+        - Rajout de la barre NAV
+        - Rajout de la possibilité de se déconnecter
+        
+-------------------SEMAINE DU 4/11 AU 10/11----------------------
+- Possibilité de choisir un avatar que j'aurais enregistré dans la BDD
+- Voir celui-ci dans le profil et dans la page des publications
+- Rajouter des commentaires aux publications
+- Créer le bouton like pour intéragir avec les publications et les commentaires
+- Créer la possibilité d'intéragir avec d'autres utilisateurs
