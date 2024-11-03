@@ -1,3 +1,5 @@
+/* -----------------------------------------------------PUBLICATIONS---------------------------------------------------------------------- */
+
 /* Reset de base */
 * {
     margin: 0;
@@ -17,7 +19,7 @@ body {
     padding: 20px;
 }
 
-/* Conteneur principal */
+/* Conteneur principal Publications */
 .container {
     max-width: 800px;
     width: 100%;
@@ -27,7 +29,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Titre principal */
+/* Titre principal de la page Publications */
 .publications_title {
     text-align: center;
     color: #333;
@@ -36,7 +38,7 @@ body {
     font-size: 26px;
 }
 
-/* Style du formulaire */
+/* Style du formulaire Page Publications */
 .form_home {
     margin-bottom: 30px;
     padding: 20px;
@@ -108,6 +110,8 @@ body {
     font-style: italic;
 }
 
+/* ----------------------------------------------------- PROFIL ---------------------------------------------------------------------- */
+
 /* Style pour la page de profil */
 /* Reset de base */
 * {
@@ -176,21 +180,28 @@ body {
     color: #555;
 }
 
+/* ----------------------------------------------------- INSCRIPTIONS ---------------------------------------------------------------------- */
 
-/* BARRE DE NAVIGATION */
+/* FORMULAIRE D'INSCRIPTION */
 
-/* Styles globaux */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.main_subscribe {
+
+    min-width: 600px;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.subscribe_title{
+
+    margin-bottom: 30px;
+   
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-}
+/* ----------------------------------------------------- BARRE DE NAV ---------------------------------------------------------------------- */
+
 
 /* Barre de navigation */
 .navbar {
@@ -235,20 +246,4 @@ body {
     margin-top: 80px; 
 }
 
-/* FORMULAIRE D'INSCRIPTION */
 
-.main_subscribe {
-
-    min-width: 600px;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.subscribe_title{
-
-    margin-bottom: 30px;
-   
-}
