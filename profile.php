@@ -2,26 +2,27 @@
 session_start();
 include_once("connectionBDD.php");
 
-// Préparation de la requête avec un paramètre nommé :id_user
-$stmt = $pdo->prepare('SELECT * FROM user WHERE id_user = :id_user');
+// Vérifie si l'ID utilisateur est présent dans la session
+if (isset($_SESSION["test_id"])) {
+    // Préparation de la requête avec l'ID utilisateur de la session
+    $stmt = $pdo->prepare('SELECT * FROM user WHERE id_user = :id_user');
 
-echo $_POST["id_user"];
+    // Liaison du paramètre :id_user avec la valeur de la session
+    $stmt->bindParam(":id_user", $_SESSION["test_id"], PDO::PARAM_INT);
 
-// Liaison du paramètre :id_user avec la valeur fournie dans $_POST
-$stmt->bindParam(":id_user", $_POST["id_user"], PDO::PARAM_INT);
+    $stmt->execute(); // Exécution de la requête
 
-$stmt->execute(); // Exécution de la requête
+    // Récupération de la ligne de résultat
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Récupération de la ligne de résultat
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if ($row) {
-    echo $row["user_mail"];
-    echo $row["user_name"];
-    echo $row["user_firstname"];
+    if ($row) {
+        echo "Adresse email : " . htmlspecialchars($row["user_mail"]) . "<br>";
+        echo "Nom : " . htmlspecialchars($row["user_name"]) . "<br>";
+        echo "Prénom : " . htmlspecialchars($row["user_firstname"]) . "<br>";
+    } else {
+        echo "Utilisateur non trouvé.";
+    }
 } else {
-    echo "Utilisateur non trouvé.";
-
-    echo $_POST["id_user"];
+    echo "ID utilisateur non trouvé dans la session.";
 }
 ?>
