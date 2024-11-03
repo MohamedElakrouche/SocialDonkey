@@ -3,19 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css" >
+    <link rel="stylesheet" href="style.css">
     <title>Accueil</title>
     <?php 
-    include_once("connectionBDD.php"); 
     session_start();
+    include_once("connectionBDD.php"); 
+    include_once("nav.php");
+
+    // Vérifie si l'utilisateur est connecté
+    if (!isset($_SESSION["user_id"])) {
+        echo "<p>Veuillez vous connecter pour accéder à cette page.</p>";
+        exit;
+    }
+
+    // Fonction pour ajouter une publication
+    function ajouterPublication($pdo, $user_id, $contenu) {
+        $date_publication = date("Y-m-d H:i:s");
+        $requete = "INSERT INTO post (post_contain, user_id, post_date) VALUES (:contenu, :user_id, :date)";
+        $stmt = $pdo->prepare($requete);
+        $stmt->bindParam(":contenu", $contenu, PDO::PARAM_STR);
+        $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(":date", $date_publication);
+        return $stmt->execute();
+    }
+
+    // Fonction pour supprimer une publication
+    function supprimerPublication($pdo, $user_id, $publication_id) {
+        $requete = "DELETE FROM post WHERE post_id = :publication_id AND user_id = :user_id";
+        $stmt = $pdo->prepare($requete);
+        $stmt->bindParam(":publication_id", $publication_id, PDO::PARAM_INT);
+        $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Fonction pour modifier une publication
+    function modifierPublication($pdo, $user_id, $publication_id, $contenu) {
+        $requete = "UPDATE post SET post_contain = :contenu WHERE post_id = :publication_id AND user_id = :user_id";
+        $stmt = $pdo->prepare($requete);
+        $stmt->bindParam(":contenu", $contenu, PDO::PARAM_STR);
+        $stmt->bindParam(":publication_id", $publication_id, PDO::PARAM_INT);
+        $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Ajout de la publication
+    if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["my_publication"]) && !empty(trim($_POST["my_publication"])) && !isset($_POST["publication_id"])) {
+        $contenu = trim($_POST["my_publication"]);
+        if (strlen($contenu) <= 500) {
+            if (ajouterPublication($pdo, $_SESSION["user_id"], $contenu)) {
+                header("Location: " . $_SERVER["PHP_SELF"]);
+                exit;
+            } else {
+                echo "<p>Erreur lors de l'ajout de la publication.</p>";
+            }
+        } else {
+            echo "<p>La publication ne doit pas dépasser 500 caractères.</p>";
+        }
+    }
+
+    // Modification de la publication
+    if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit_publication_id"]) && isset($_POST["edited_publication"])) {
+        $publication_id = $_POST["edit_publication_id"];
+        $edited_content = trim($_POST["edited_publication"]);
+        if (modifierPublication($pdo, $_SESSION["user_id"], $publication_id, $edited_content)) {
+            header("Location: " . $_SERVER["PHP_SELF"]);
+            exit;
+        } else {
+            echo "<p>Erreur lors de la modification de la publication.</p>";
+        }
+    }
+
+    // Suppression de la publication
+    if (isset($_POST["button_delete_publication"]) && isset($_POST["publication_id"])) {
+        $publication_id = $_POST["publication_id"];
+        if (supprimerPublication($pdo, $_SESSION["user_id"], $publication_id)) {
+            header("Location: " . $_SERVER["PHP_SELF"]);
+            exit;
+        } else {
+            echo "<p>Erreur lors de la suppression de la publication.</p>";
+        }
+    }
     ?>
-    
 </head>
 <body>
 
 <div class="container">
-
-    <h2>PUBLICATIONS</h2>
+    <h2 class="publications_title">PUBLICATIONS</h2>
 
     <!-- Formulaire de publication -->
     <div class="form_home">
@@ -26,56 +99,52 @@
         </form>
     </div>
 
+    <!-- Affichage des publications -->
     <?php
-    // Vérification de sécurité de la publication reçue
-    if (isset($_POST["my_publication"]) && !empty($_POST["my_publication"]) && strlen($_POST["my_publication"]) < 500) {
-
-        $my_publication = ($_POST["my_publication"]);
-        $date_publication = date("Y-m-d H:i:s");
-
-        // Vérification que l'utilisateur est connecté
-        if (isset($_SESSION["user_id"])) {
-            $user_id = $_SESSION["user_id"];
-
-            // Enregistrement dans la base de données
-            $requete_publication = "INSERT INTO post (post_contain, user_id, post_date) VALUES (:my_publication, :user_id, :post_date)"; 
-            $secure_requete_publication = $pdo->prepare($requete_publication);
-
-            $secure_requete_publication->bindParam(":my_publication", $my_publication, PDO::PARAM_STR);
-            $secure_requete_publication->bindParam(":user_id", $user_id, PDO::PARAM_INT);
-            $secure_requete_publication->bindParam(":post_date", $date_publication);
-
-            try {
-                if ($secure_requete_publication->execute()) {
-                    echo "<p>Votre publication a été ajoutée : " . htmlspecialchars($my_publication) . "</p>";
-                } else {
-                    echo "<p>Problème de BDD lors de la publication.</p>";
-                }
-            } catch (PDOException $e) {
-                echo "<p>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
-            }
-        } else {
-            echo "<p>Utilisateur non connecté. Veuillez vous connecter pour publier.</p>";
-        }
-    } else {
-        echo "<p>Le formulaire n'a pu être publié, merci d'en vérifier le contenu.</p>";
-    }
-
-    // Affichage des publications
-    $requete_publications_home = "SELECT * FROM post JOIN user ON post.user_id=user.id_user ORDER BY post_date DESC";
-    $secure_requete_publications_home = $pdo->prepare($requete_publications_home);
-
     try {
-        if ($secure_requete_publications_home->execute()) {
-            $publications = $secure_requete_publications_home->fetchAll(PDO::FETCH_ASSOC);
+        $requete_publications_home = "SELECT post.post_id, post.post_contain, post.post_date, user.user_name, post.user_id
+                                      FROM post
+                                      JOIN user ON post.user_id = user.id_user
+                                      ORDER BY post_date DESC";
+        $stmt = $pdo->prepare($requete_publications_home);
+        if ($stmt->execute()) {
+            $publications = $stmt->fetchAll(PDO::FETCH_ASSOC);
             echo "<h3>Liste des publications</h3>";
-    
-            // Affichage des publications
+
             foreach ($publications as $publication) {
                 echo "<div class='home_publications'>
                         <p>" . htmlspecialchars($publication["post_contain"]) . "</p>
-                        <div class='post-date'>Publié le " . htmlspecialchars($publication["post_date"]) . " par : " . htmlspecialchars($publication["user_name"]) . "</div>
-                      </div>";
+                        <div class='post-date'>Publié le " . htmlspecialchars($publication["post_date"]) . " par " . htmlspecialchars($publication["user_name"]) . "</div>";
+                
+                // Affiche les boutons de modification et de suppression si l'utilisateur est l'auteur de la publication
+
+                if ($_SESSION["user_id"] == $publication["user_id"]) 
+                {
+                    echo "<form action='' method='POST' style='display:inline-block;'>
+                            <input type='hidden' name='publication_id' value='" . htmlspecialchars($publication["post_id"]) . "'>
+                            <button type='submit' name='button_delete_publication' id='button_delete_publication'>Supprimer</button>
+                          </form>";
+
+                    // Formulaire de modification (affiché si l'utilisateur clique sur "Modifier")
+
+                    if (isset($_POST['edit_publication_id']) && $_POST['edit_publication_id'] == $publication["post_id"]) 
+                    {
+                        echo "<form action='' method='POST' style='display:inline-block;'>
+                                <input type='hidden' name='edit_publication_id' value='" . htmlspecialchars($publication["post_id"]) . "'>
+                                <textarea name='edited_publication' required>" . htmlspecialchars($publication["post_contain"]) . "</textarea>
+                                <button type='submit'>Enregistrer</button>
+                              </form>";
+                    } 
+                    else
+                     {
+                        echo "<form action='' method='POST' style='display:inline-block;'>
+                                <input type='hidden' name='edit_publication_id' value='" . htmlspecialchars($publication["post_id"]) . "'>
+                                <button type='submit'>Modifier</button>
+                              </form>";
+                    }
+                }
+                
+                echo "</div>";
             }
         } else {
             echo "<p>Problème d'affichage des posts.</p>";
@@ -83,10 +152,7 @@
     } catch (PDOException $e) {
         echo "<p>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
     }
-    
-    
     ?>
-
 </div>
 
 </body>

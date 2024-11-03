@@ -6,11 +6,15 @@
     <title>Page de connexion</title>
     <?php 
     include("connectionBDD.php");
+    
     session_start(); 
     ?>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+<?php include_once("nav.php"); ?>
 
     <form action="" method="post">
         <label for="mail_connection">Adresse email :</label>
@@ -29,10 +33,9 @@
         $mail_connection = $_POST["mail_connection"];
         $password_connection = $_POST["password_connection"];
 
-        // Requête pour récupérer l'ID associé au mail
+        // Requête pour récupérer l'ID du mail
         $requeteID = "SELECT id_user FROM user WHERE user_mail = :mail";
 
-        // Préparation de la requête
         $secure_requeteID = $pdo->prepare($requeteID);
         $secure_requeteID->bindParam(":mail", $mail_connection, PDO::PARAM_STR);
 
@@ -41,14 +44,15 @@
             if ($secure_requeteID->execute()) {
                 $result_connection = $secure_requeteID->fetch(PDO::FETCH_ASSOC);
                 
-                // Vérifie si un ID utilisateur a été trouvé
+                // il faut vérifier sii il y'a un ID 
+
                 if ($result_connection) {
                     $testID = $result_connection["id_user"];
                     $_SESSION["user_id"] = $testID;
-
-                    // Redirection vers la page de profil
                     header("Location: profile.php");
+
                     exit();
+
                 } else {
                     echo "Utilisateur non trouvé.";
                 }

@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulaire d'inscription</title>
+    <link rel="stylesheet" href=style.css>
 </head>
 
 <body>
-
+<?php include_once("nav.php"); ?>
     <!-- ----------------------------Formulaire d'inscription simple-------------------------- -->
-
-    <h2>Formulaire d'inscription</h2>
+<div class="main_subscribe"
+    <h2 class=subscribe_title>Formulaire d'inscription</h2>
 
     <form action="" method="POST">
 
@@ -47,6 +48,7 @@
 
 
     <?php
+    
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // ---------récupération des réponses du formulaire-----------
@@ -103,7 +105,7 @@
 
 
     ?>
-
+</div>
 </body>
 
 
